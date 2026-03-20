@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Rescue - Connecting Donors and NGOs</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+/* ================= VARIABLES ================= */
+:root {
+    /* Color Palette - Vibrant & Premium */
+    --clr-bg-dark: #0f172a;       /* Slate 900 */
+    --clr-bg-card: #1e293b;       /* Slate 800 */
+    --clr-primary: #10b981;       /* Emerald 500 - Eco/Food theme */
+    --clr-primary-glow: rgba(16, 185, 129, 0.4);
+    --clr-accent: #f59e0b;        /* Amber 500 - Actions/Alerts */
+    --clr-accent-glow: rgba(245, 158, 11, 0.4);
+    --clr-text-main: #f8fafc;     /* Slate 50 */
+    --clr-text-muted: #94a3b8;    /* Slate 400 */
+    --clr-danger: #ef4444;        /* Red 500 */
+
+    /* Layout & Styling */
+    --font-main: 'Outfit', sans-serif;
+    --radius-sm: 8px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --radius-full: 9999px;
+    --transition-fast: 0.2s ease;
+    --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Glassmorphism */
+    --glass-bg: rgba(30, 41, 59, 0.7);
+    --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    --glass-blur: blur(12px);
+}
+
+/* ================= GLOBALS & LAYOUT (main.css) ================= */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-main);
+    background-color: var(--clr-bg-dark);
+    color: var(--clr-text-main);
+    min-height: 100vh;
+    overflow-x: hidden;
+    /* subtle background gradient mesh */
+    background-image: 
+        radial-gradient(circle at 15% 50%, rgba(16, 185, 129, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 85% 30%, rgba(245, 158, 11, 0.1) 0%, transparent 50%);
+    background-attachment: fixed;
+}
+
+#app {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    padding-top: 80px; /* Space for fixed nav */
+}
+
+/* --- Navigation --- */
+.glass-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 80px;
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border-bottom: var(--glass-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 1000;
+}
+
+.nav-brand {
+    font-size: 1.5rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--clr-text-main);
+}
+.text-accent { color: var(--clr-primary); }
+
+.nav-links {
+    display: flex;
+    gap: 1rem;
+    background: rgba(15, 23, 42, 0.5);
+    padding: 0.5rem;
+    border-radius: var(--radius-full);
+    border: var(--glass-border);
+}
+
+.nav-btn {
+    background: transparent;
+    border: none;
+    color: var(--clr-text-muted);
+    font-family: var(--font-main);
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 0.5rem 1.25rem;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.nav-btn:hover {
+    color: var(--clr-text-main);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.nav-btn.active {
+    background: var(--clr-primary);
+    color: var(--clr-bg-dark);
+    box-shadow: 0 0 15px var(--clr-primary-glow);
+}
+
+.avatar img {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 2px solid var(--clr-primary);
+    object-fit: cover;
+}
+
+/* --- Main Layout --- */
+#main-content {
+    flex: 1;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    animation: fadeIn 0.4s ease forwards;
+}
+
+/* --- Reusable Components --- */
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    border: var(--glass-border);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    box-shadow: var(--glass-shadow);
+}
+
+.btn-primary {
+    background: var(--clr-primary);
+    color: var(--clr-bg-dark);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px var(--clr-primary-glow);
+}
+
+.view-section {
+    display: none;
+    animation: slideUp 0.4s ease forwards;
+}
+.view-section.active {
+    display: block;
+}
+
+/* --- Animations --- */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .nav-links {
+        position: fixed;
+        bottom: 1rem;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        justify-content: space-between;
+        padding: 0.5rem 1rem;
+    }
+    .nav-btn span { display: none; }
+    .nav-btn { padding: 0.75rem; }
+    #main-content { padding-bottom: 5rem; }
+}
+
+/* ================= NOTIFIER COMPONENT ================= */
+#toast-container {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    z-index: 9999;
+}
+.toast {
+    min-width: 300px;
+    background: var(--glass-bg, rgba(30, 41, 59, 0.95));
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transform: translateX(120%);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    cursor: pointer;
+}
+.toast.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+.toast.fade-out {
+    transform: translateX(120%);
+    opacity: 0;
+}
+.toast-icon { font-size: 1.5rem; }
+.toast-content h4 { margin: 0 0 0.25rem 0; font-size: 1rem; }
+.toast-content p { margin: 0; font-size: 0.85rem; color: var(--clr-text-muted, #94a3b8); }
+.toast-success .toast-icon { color: var(--clr-primary, #10b981); }
+.toast-info .toast-icon { color: #3b82f6; }
+.toast-warning .toast-icon { color: var(--clr-accent, #f59e0b); }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- Navigation -->
+        <nav class="glass-nav">
+            <div class="nav-brand">
+                <i class="fa-solid fa-leaf text-accent"></i>
+                <span>Food Rescue</span>
+            </div>
+            <div class="nav-links">
+                <button class="nav-btn active" data-view="dashboard"><i class="fa-solid fa-house"></i> Dashboard</button>
+                <button class="nav-btn" data-view="donate"><i class="fa-solid fa-hand-holding-heart"></i> Donate</button>
+                <button class="nav-btn" data-view="volunteer"><i class="fa-solid fa-map-location-dot"></i> Rescue</button>
+                <button class="nav-btn" data-view="leaderboard"><i class="fa-solid fa-trophy"></i> Ranks</button>
+            </div>
+            <div class="nav-profile">
+                <div class="avatar">
+                    <img src="https://ui-avatars.com/api/?name=User&background=random" alt="Profile">
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main id="main-content"></main>
+
+        <!-- Notification Toast Container -->
+        <div id="toast-container"></div>
+    </div>
+
+<script>
+/* ================= UTILS ================= */
+const Notifier = {
+    container: null,
+    init() {
+        this.container = document.getElementById('toast-container');
+    },
+    show(title, message, type = 'info', duration = 4000) {
+        if (!this.container) this.init();
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        const icons = { success: 'fa-check-circle', info: 'fa-info-circle', warning: 'fa-bell' };
+        const iconClass = icons[type] || icons.info;
+        toast.innerHTML = `
+            <div class="toast-icon"><i class="fa-solid ${iconClass}"></i></div>
+            <div class="toast-content">
+                <h4>${title}</h4><p>${message}</p>
+            </div>
+        `;
+        toast.addEventListener('click', () => this.remove(toast));
+        this.container.appendChild(toast);
+        requestAnimationFrame(() => requestAnimationFrame(() => toast.classList.add('show')));
+        setTimeout(() => this.remove(toast), duration);
+    },
+    remove(toastElement) {
+        if (!toastElement) return;
+        toastElement.classList.replace('show', 'fade-out');
+        setTimeout(() => {
+            if (toastElement.parentNode === this.container) {
+                this.container.removeChild(toastElement);
+            }
+        }, 400); 
+    }
+};
+
+const Geolocator = {
+    baseCenter: { lat: 40.7128, lng: -74.0060 },
+    getCurrentPosition() {
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                resolve({ coords: { latitude: this.baseCenter.lat, longitude: this.baseCenter.lng, accuracy: 10 } });
+            }, 500);
+        });
+    },
+    calculateDistance(coordA, coordB) {
+        const latDiff = coordA[0] - coordB[0];
+        const lngDiff = coordA[1] - coordB[1];
+        const val = Math.sqrt((latDiff * latDiff) + (lngDiff * lngDiff)) * 69;
+        return val.toFixed(1);
+    },
+    generateNearbyCoords() {
+        const latOffset = (Math.random() - 0.5) * 0.06;
+        const lngOffset = (Math.random() - 0.5) * 0.06;
+        return [this.baseCenter.lat + latOffset, this.baseCenter.lng + lngOffset];
+    }
+};
+
+/* ================= COMPONENTS ================= */
+const DonateView = {
+    render() {
+        return `
+            <div class="glass-card" style="max-width: 600px; margin: 0 auto; animation: slideUp 0.5s ease;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+                    <h2>Post a Donation</h2>
+                    <div class="sticker-badge" id="auto-sticker" title="Tiny Sticker Tag" style="background: rgba(16, 185, 129, 0.2); border: 1px solid var(--clr-primary); color: var(--clr-primary); padding: 0.25rem 0.75rem; border-radius: var(--radius-full); font-weight: 700; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                        <i class="fa-solid fa-tag"></i> <span id="sticker-code">---</span>
+                    </div>
+                </div>
+                
+                <p class="text-muted" style="margin-bottom: 2rem;">Help your local community by positing surplus food.</p>
+                
+                <form id="donate-form" style="display: flex; flex-direction: column; gap: 1.25rem;">
+                    <div class="form-group" style="display:flex; flex-direction:column; gap:0.5rem;">
+                        <label for="foodName" style="font-size: 0.9rem; color: var(--clr-text-muted);">Food Name / Description</label>
+                        <input type="text" id="foodName" required placeholder="e.g. 5 Boxes of Margherita Pizza" style="padding: 0.75rem 1rem; border-radius: var(--radius-sm); border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(0, 0, 0, 0.2); color: var(--clr-text-main); font-family: var(--font-main);">
+                    </div>
+                    
+                    <div class="form-group" style="display:flex; flex-direction:column; gap:0.5rem;">
+                        <label for="quantity" style="font-size: 0.9rem; color: var(--clr-text-muted);">Approx. Quantity / Servings</label>
+                        <input type="number" id="quantity" required placeholder="10" min="1" style="padding: 0.75rem 1rem; border-radius: var(--radius-sm); border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(0, 0, 0, 0.2); color: var(--clr-text-main); font-family: var(--font-main);">
+                    </div>
+
+                    <div class="form-group" style="display:flex; flex-direction:column; gap:0.5rem;">
+                        <label for="location" style="font-size: 0.9rem; color: var(--clr-text-muted);">Pickup Location (or let GPS decide)</label>
+                        <div style="display:flex; gap:0.5rem;">
+                            <input type="text" id="location" required placeholder="123 Main St." style="flex:1; padding: 0.75rem 1rem; border-radius: var(--radius-sm); border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(0, 0, 0, 0.2); color: var(--clr-text-main); font-family: var(--font-main);">
+                            <button type="button" class="btn-icon" id="btn-gps" title="Use current location" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--clr-text-main); width: 44px; border-radius: var(--radius-sm); cursor: pointer;">
+                                <i class="fa-solid fa-location-crosshairs"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; padding: 1rem;">
+                            <i class="fa-solid fa-paper-plane"></i> Alert Nearby Volunteers
+                        </button>
+                    </div>
+                </form>
+            </div>
+        `;
+    },
+    bindEvents(appState) {
+        const stickerEl = document.getElementById('sticker-code');
+        let currentSticker = this.generateStickerCode();
+        if (stickerEl) stickerEl.textContent = currentSticker;
+
+        const badgeEl = document.getElementById('auto-sticker');
+        if (badgeEl) {
+            badgeEl.addEventListener('click', () => {
+                currentSticker = this.generateStickerCode();
+                stickerEl.textContent = currentSticker;
+                Notifier.show("Sticker Assigned", `Container tagged with code: ${currentSticker}`, "success", 2000);
+            });
+        }
+
+        const gpsBtn = document.getElementById('btn-gps');
+        if (gpsBtn) {
+            gpsBtn.addEventListener('click', () => {
+                const locInput = document.getElementById('location');
+                locInput.value = "Detecting...";
+                setTimeout(() => {
+                    locInput.value = "Current Location Detected";
+                    Notifier.show("Location found", "Using your current GPS coordinates.", "info", 2000);
+                }, 800);
+            });
+        }
+
+        const form = document.getElementById('donate-form');
+        if (form) {
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const food = document.getElementById('foodName').value;
+                const loc = document.getElementById('location').value;
+
+                const newPost = {
+                    id: Date.now().toString(),
+                    food: food,
+                    type: 'Donation',
+                    location: loc,
+                    coords: [40.7128, -74.0060],
+                    timestamp: Date.now(),
+                    sticker: currentSticker,
+                    status: 'available'
+                };
+
+                appState.postings.unshift(newPost);
+                appState.user.points += 50;
+                Notifier.show("Donation Posted!", `Your food alert is live. Volunteers are being notified. You earned 50 points!`, "success", 5000);
+
+                form.reset();
+                currentSticker = this.generateStickerCode();
+                stickerEl.textContent = currentSticker;
+
+                setTimeout(() => { window.app.navigate('dashboard'); }, 1500);
+            });
+        }
+    },
+    generateStickerCode() {
+        const prefixes = ['FD', 'ML', 'PZ', 'BX', 'PR'];
+        const p = prefixes[Math.floor(Math.random() * prefixes.length)];
+        const l = String.fromCharCode(65 + Math.floor(Math.random() * 26));
+        const n = Math.floor(Math.random() * 9) + 1;
+        return `${p}-${l}${n}`;
+    }
+};
+
+const VolunteerView = {
+    render(appState) {
+        let feedHTML = '';
+        if (appState.postings.length === 0) {
+            feedHTML = `<div class="text-muted" style="text-align:center; padding: 2rem;">No active rescues needed right now. Map is clear!</div>`;
+        } else {
+            feedHTML = appState.postings.filter(p => p.status === 'available').map(post => {
+                const isUrgent = Date.now() - post.timestamp > 3600000;
+                const rawDist = Geolocator.calculateDistance(Geolocator.baseCenter, post.coords);
+                const timeAgo = Math.floor((Date.now() - post.timestamp) / 60000);
+
+                return `
+                    <div class="glass-card" style="margin-bottom: 1rem; position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); transition: 0.3s ease;">
+                        <div style="${isUrgent ? 'position:absolute; top:0; left:0; width:4px; height:100%; background:var(--clr-danger); box-shadow:0 0 10px var(--clr-danger);' : ''}"></div>
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 0.5rem;">
+                            <h3 style="margin:0; font-size:1.1rem; color: var(--clr-primary);">${post.food}</h3>
+                            <span style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255,255,255,0.2); padding: 0.15rem 0.5rem; border-radius: var(--radius-sm); font-size: 0.75rem; font-weight: bold; color: var(--clr-text-main);"><i class="fa-solid fa-tag"></i> ${post.sticker}</span>
+                        </div>
+                        <div class="text-muted" style="font-size: 0.9rem; margin-bottom: 1rem; display:flex; flex-direction:column; gap:0.25rem;">
+                            <span><i class="fa-solid fa-location-dot"></i> ${post.location} (~${rawDist} mi away)</span>
+                            <span><i class="fa-solid fa-clock"></i> Posted ${timeAgo} mins ago</span>
+                        </div>
+                        <button class="btn-primary" style="width: 100%; justify-content:center;" onclick="window.VolunteerView.acceptRescue('${post.id}')">Accept Rescue</button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        return `
+            <div style="display: grid; grid-template-columns: 1fr; gap: 2rem;">
+                <!-- Mock Map Header -->
+                <div class="glass-card" style="height: 250px; display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative; overflow:hidden; animation: fadeIn 0.5s ease; background: linear-gradient(145deg, #1e293b, #0f172a); border: 1px solid rgba(16, 185, 129, 0.2);">
+                    <i class="fa-solid fa-earth-americas" style="font-size: 4rem; color: rgba(16, 185, 129, 0.4); margin-bottom:1rem; z-index:10;"></i>
+                    <h3 style="z-index: 10;">Rescue Map Active</h3>
+                    <p class="text-muted" style="z-index: 10;">Scanning for nearby surplus food...</p>
+                    <div style="position:absolute; inset:0; background:radial-gradient(circle at center, transparent 0%, var(--clr-bg-dark) 100%); pointer-events:none;"></div>
+                </div>
+
+                <!-- Feed Column -->
+                <div>
+                    <h2 style="margin-bottom: 1.5rem; display:flex; align-items:center; justify-content:space-between;">
+                        Live Request Feed
+                        <span style="width:12px; height:12px; background-color:var(--clr-danger); border-radius:50%;"></span>
+                    </h2>
+                    <div id="rescue-feed">${feedHTML}</div>
+                </div>
+            </div>
+        `;
+    },
+    bindEvents(appState) {
+        window.VolunteerView = {
+            acceptRescue: (id) => {
+                const postIdx = appState.postings.findIndex(p => p.id === id);
+                if (postIdx > -1) {
+                    appState.postings[postIdx].status = 'accepted';
+                    appState.user.points += 100;
+                    Notifier.show("Pickup Accepted!", `Navigation started to ${appState.postings[postIdx].location}. You earned 100 Rescue Points!`, "success", 4000);
+                    window.app.navigate('volunteer');
+                }
+            }
+        };
+
+        if (appState.postings.filter(p => p.status === 'available').length === 0) {
+            setTimeout(() => {
+                Notifier.show("New Request Detected", "A bakery nearby just posted surplus bread.", "warning", 5000);
+                appState.postings.unshift({
+                    id: 'mock-new-sys',
+                    food: 'Surplus Pastries & Bread',
+                    type: 'Bakery',
+                    location: 'Corner Bakery Ave',
+                    coords: Geolocator.generateNearbyCoords(),
+                    timestamp: Date.now(),
+                    sticker: 'BK-Z9',
+                    status: 'available'
+                });
+                if (appState.currentView === 'volunteer') {
+                    window.app.navigate('volunteer'); 
+                }
+            }, 5000);
+        }
+    }
+};
+
+const LeaderboardView = {
+    render(appState) {
+        const mockUsers = [
+            { name: "Sarah J.", role: "Hero", points: 1250, badge: "fa-crown", color: "#fbbf24" },
+            { name: "Mike T.", role: "Rescuer", points: 980, badge: "fa-medal", color: "#94a3b8" },
+            { name: appState.user.name, role: appState.user.role, points: appState.user.points, badge: "fa-star", color: "#cd7f32", active: true },
+            { name: "Local Cafe", role: "Top Donor", points: 540, badge: "fa-award", color: "var(--clr-primary)" }
+        ];
+
+        mockUsers.sort((a, b) => b.points - a.points);
+        const listHTML = mockUsers.map((u, idx) => `
+            <div style="display:flex; align-items:center; justify-content:space-between; padding:1rem 1.5rem; background:${u.active ? 'rgba(16, 185, 129, 0.1)' : 'rgba(0,0,0,0.2)'}; border-radius:var(--radius-md); margin-bottom:0.75rem; border:1px solid ${u.active ? 'var(--clr-primary)' : 'transparent'}; box-shadow:${u.active ? '0 0 15px rgba(16, 185, 129, 0.2)' : 'none'};">
+                <div style="font-size:1.25rem; font-weight:700; color:${u.active ? 'var(--clr-primary)' : 'var(--clr-text-muted)'}; width:40px;">#${idx + 1}</div>
+                <div style="display:flex; align-items:center; gap:1rem; flex:1;">
+                    <div style="width:36px; height:36px; border-radius:50%; background:var(--clr-bg-card); display:flex; align-items:center; justify-content:center; color:var(--clr-text-muted); border:1px solid rgba(255,255,255,0.1);"><i class="fa-solid fa-user"></i></div>
+                    <div>
+                        <h4 style="margin:0;">${u.name} ${u.active ? '(You)' : ''}</h4>
+                        <span class="text-muted" style="font-size:0.8rem;">${u.role}</span>
+                    </div>
+                </div>
+                <div style="background:rgba(0,0,0,0.4); padding:0.5rem 1rem; border-radius:var(--radius-full); font-weight:600; display:flex; align-items:center; border:1px solid rgba(255,255,255,0.05);">
+                    <i class="fa-solid ${u.badge}" style="color: ${u.color}; margin-right: 0.25rem;"></i>
+                    ${u.points} pts
+                </div>
+            </div>
+        `).join('');
+
+        return `
+            <div class="glass-card" style="max-width: 800px; margin: 0 auto; animation: slideUp 0.5s ease;">
+                <div style="text-align:center; padding: 2rem 0; margin-bottom: 2rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                    <i class="fa-solid fa-trophy" style="font-size: 3rem; color: var(--clr-accent); text-shadow: 0 0 20px rgba(245, 158, 11, 0.5); margin-bottom: 1rem;"></i>
+                    <h2>Community Heroes</h2>
+                    <p class="text-muted">Ranking our top food rescue champions.</p>
+                </div>
+                <div>${listHTML}</div>
+            </div>
+        `;
+    },
+    bindEvents() {}
+};
+
+/* ================= STATE & APP LOGIC ================= */
+const state = {
+    currentView: 'dashboard',
+    user: { name: 'Demo User', role: 'volunteer', points: 450 },
+    postings: [
+        { id: '1', food: '10 Boxes of Pizza', type: 'Surplus Event', location: '123 Main St', coords: [40.7128, -74.0060], timestamp: Date.now() - 1000000, sticker: 'PZ-A1', status: 'available' },
+        { id: '2', food: 'Fresh Produce Assortment', type: 'Supermarket', location: 'Market Ave', coords: [40.7300, -73.9900], timestamp: Date.now() - 3000000, sticker: 'PR-B4', status: 'available' }
+    ]
+};
+
+const views = {
+    dashboard: {
+        render: (appState) => `
+            <div class="glass-card" style="animation: fadeIn 0.4s ease;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                    <div>
+                        <h2>Welcome back, <span class="text-accent">${appState.user.name}</span></h2>
+                        <p class="text-muted" style="margin-top:0.5rem;"><i class="fa-solid fa-star" style="color:#fbbf24;"></i> ${appState.user.points} Rescue Points</p>
+                    </div>
+                    <div style="padding:1rem; background:rgba(16,185,129,0.1); border-radius:12px; border:1px solid rgba(16,185,129,0.2); text-align:center;">
+                        <span style="font-size:2rem; font-weight:700; color:var(--clr-primary); line-height:1;">
+                            ${appState.postings.filter(p=>p.status==='available').length}
+                        </span>
+                        <div style="font-size:0.75rem; color:var(--clr-text-muted);">Active Rescues</div>
+                    </div>
+                </div>
+                
+                <div style="display:flex; gap:1rem; margin-top:2rem; flex-wrap:wrap;">
+                    <button class="btn-primary" style="flex:1;" onclick="window.app.navigate('donate')">
+                        <i class="fa-solid fa-hand-holding-heart"></i> Donate Food
+                    </button>
+                    <button class="btn-primary" style="flex:1; background:var(--clr-accent); color:var(--clr-bg-dark);" onclick="window.app.navigate('volunteer')">
+                        <i class="fa-solid fa-truck-fast"></i> Rescue Radar
+                    </button>
+                </div>
+            </div>
+        `,
+        bindEvents: () => {}
+    },
+    donate: DonateView,
+    volunteer: VolunteerView,
+    leaderboard: LeaderboardView
+};
+
+const app = {
+    init() {
+        this.bindNav();
+        this.renderView(state.currentView);
+        window.app = this;
+    },
+    bindNav() {
+        const navBtns = document.querySelectorAll('.nav-btn');
+        navBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const targetView = e.currentTarget.dataset.view;
+                this.navigate(targetView);
+            });
+        });
+    },
+    navigate(viewName) {
+        if (!views[viewName]) return;
+        state.currentView = viewName;
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.view === viewName);
+        });
+        this.renderView(viewName);
+    },
+    renderView(viewName) {
+        const mainContent = document.getElementById('main-content');
+        const viewObj = views[viewName];
+        mainContent.innerHTML = `<div class="view-section active">${viewObj.render(state)}</div>`;
+        if (typeof viewObj.bindEvents === 'function') {
+            viewObj.bindEvents(state);
+        }
+    }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    Notifier.init();
+    app.init();
+});
+</script>
+</body>
+</html>
