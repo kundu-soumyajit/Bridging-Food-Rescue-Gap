@@ -70,4 +70,12 @@ Government laws to protect food donors (Good Samaritan laws)
 
 http://127.0.0.1:5500/foodrescue.html
 
+👉 DEMO
+
 <img width="1916" height="963" alt="Food Rescue" src="https://github.com/user-attachments/assets/b16498df-d1f3-4f29-bf69-e7e68d5a4f3c" />
+
+<img width="1914" height="967" alt="Screenshot 2026-03-22 012907" src="https://github.com/user-attachments/assets/4214bfde-d5d6-4fc2-a1cc-eb47eaea64b3" />
+
+<img width="1919" height="965" alt="Screenshot 2026-03-22 012942" src="https://github.com/user-attachments/assets/f2d8e55f-63c1-4c85-ba56-adc0d2d88cbe" />
+
+<img width="1917" height="967" alt="Screenshot 2026-03-22 013003" src="https://github.com/user-attachments/assets/adbdb376-d6ba-4113-b37f-b5f414864c41" />
