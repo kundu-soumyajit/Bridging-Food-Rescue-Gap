@@ -68,11 +68,11 @@ Encourage restaurants and households to donate
 5. Policy support
 Government laws to protect food donors (Good Samaritan laws)
 
-Website:
+🌐 Website:
 
 http://127.0.0.1:5500/foodrescue.html
 
-👉 DEMO
+👉 DEMO:
 
 <img width="1916" height="963" alt="Food Rescue" src="https://github.com/user-attachments/assets/b16498df-d1f3-4f29-bf69-e7e68d5a4f3c" />
 
